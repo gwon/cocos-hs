@@ -44,6 +44,10 @@ export class SymbolManagerTest extends Component {
                 button.node.on(Button.EventType.CLICK, () => {
                     this.playLast1();
                 });
+            } else if (button.node.name.toLocaleLowerCase().indexOf("setdic") >= 0) {
+                button.node.on(Button.EventType.CLICK, () => {
+                    this.setDic();
+                });
             } else {
                 console.warn("button", button.node.name, " not found event");
             }
@@ -122,5 +126,20 @@ export class SymbolManagerTest extends Component {
             const randomSymbol = this.symbolManager.getRandomSymbol();
             symbolData.copyFrom(randomSymbol);
         }
+    }
+
+    setDic() {
+        const dic = new Map<string, string>();
+        dic.set("101", "L1");
+        dic.set("102", "L2");
+        dic.set("103", "L3");
+        dic.set("104", "L4");
+        dic.set("201", "H1");
+        dic.set("202", "H2");
+        dic.set("203", "H3");
+        dic.set("204", "H4");
+        dic.set("1", "Wild");
+        dic.set("25", "Scatter");
+        this.symbolManager.setup(dic);
     }
 }

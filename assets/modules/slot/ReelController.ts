@@ -11,8 +11,11 @@ import {
     TweenEasing,
     Vec3,
 } from "cc";
-import { SymbolManager } from "./SymbolManager";
+
+import { SymbolManager } from "../symbol-manager/SymbolManager";
 import { SymbolController } from "./SymbolController";
+import { SymbolData } from "../symbol-manager/SymbolData";
+
 const { ccclass, property } = _decorator;
 
 export enum DIRECTION {
@@ -26,8 +29,8 @@ export enum STATE {
     STOPPING,
 }
 
-@ccclass("WheelController")
-export class WheelController extends Component {
+@ccclass("ReelController")
+export class ReelController extends Component {
     private id: number = 0;
     private moveDistance: number = 5000;
     private stopTimeRatio = 4.5;
@@ -44,14 +47,14 @@ export class WheelController extends Component {
     private stopCountTarget: number = -1;
     private endingNode: Node = null;
     private lastEndingPos: Vec3 = new Vec3();
-    private results: SymbolController[] = [];
+    private results: SymbolData[] = [];
     private totalMoveTime = 0;
     private displaySize = 0;
-    private slots: Node[] = [];
+    private symbols: SymbolController[] = [];
     private winIdxs: number[] = [];
     private easingStart = easing.backInOut;
     private easingStop = easing.backOut;
-    private onCompleteCallback: (self: WheelController) => void = () => {
+    private onCompleteCallback: (self: ReelController) => void = () => {
         console.warn("on complete not set yet");
     };
 
@@ -66,10 +69,10 @@ export class WheelController extends Component {
             this.maxY = temp;
         }
 
-        this.displaySize = this.slots.length;
-        const p0 = this.slots[0].getPosition();
-        const p1 = this.slots[1].getPosition();
-        const pend = this.slots[this.slots.length - 1].getPosition();
+        this.displaySize = this.symbols.length;
+        const p0 = this.symbols[0].node.getPosition();
+        const p1 = this.symbols[1].node.getPosition();
+        const pend = this.symbols[this.symbols.length - 1].node.getPosition();
         this.dy = Math.abs(p1.y - p0.y);
         const distance = Math.abs(pend.y - p0.y);
         this.totalMoveTime = distance / this.moveDistance;
@@ -89,38 +92,31 @@ export class WheelController extends Component {
 
     start() {
         this.fillItems();
-        for (const slot of this.slots) {
-            const skelton = slot.getComponent(sp.Skeleton);
-            if (skelton) skelton.destroy();
-        }
-
         this.sortingSpinSlots();
         this.fillSymbols();
     }
 
     private fillItems() {
-        const { displayItem, extendedItems } = this.getSlots();
+        const { displayItem, extendedItems } = this.getSymbols();
         for (const item of displayItem) {
-            const controller = this.symbolManager.createEmptySymbol(item.name);
-            item.addChild(controller.node);
-            controller.node.setPosition(0, 0, 0);
-            controller.show();
+            const symbolData = this.symbolManager.getRandomSymbol();
+            item.copyFrom(symbolData);
+            item.show();
         }
         for (const item of extendedItems) {
-            const controller = this.symbolManager.createEmptySymbol(item.name);
-            item.addChild(controller.node);
-            controller.node.setPosition(0, 0, 0);
-            controller.show();
+            const symbolData = this.symbolManager.getRandomSymbol();
+            item.copyFrom(symbolData);
+            item.show();
         }
     }
 
     private addTopAndBottomItems() {
         const maxY = this.maxY + this.dy;
         const minY = this.minY - this.dy;
-        const topItem = instantiate(this.slots[0]);
+        const topItem = instantiate(this.symbols[0].node);
         this.node.addChild(topItem);
         topItem.setPosition(0, maxY, 0);
-        const bottomItem = instantiate(this.slots[0]);
+        const bottomItem = instantiate(this.symbols[0].node);
         this.node.addChild(bottomItem);
         bottomItem.setPosition(0, minY, 0);
     }
@@ -138,30 +134,30 @@ export class WheelController extends Component {
         return this.displaySize;
     }
 
-    onComplete(callback: (self: WheelController) => void) {
+    onComplete(callback: (self: ReelController) => void) {
         this.onCompleteCallback = callback;
     }
 
     findMinY() {
-        let minY = this.slots[0].getPosition().y;
-        for (const slot of this.slots) {
-            const p0 = slot.getPosition();
+        let minY = this.symbols[0].node.getPosition().y;
+        for (const symbol of this.symbols) {
+            const p0 = symbol.node.getPosition();
             if (p0.y < minY) minY = p0.y;
         }
         return minY;
     }
 
     findMaxY() {
-        let maxY = this.slots[0].getPosition().y;
-        for (const slot of this.slots) {
-            const p0 = slot.getPosition();
+        let maxY = this.symbols[0].node.getPosition().y;
+        for (const symbol of this.symbols) {
+            const p0 = symbol.node.getPosition();
             if (p0.y > maxY) maxY = p0.y;
         }
         return maxY;
     }
 
-    getSlots() {
-        const displayItem = [...this.slots];
+    getSymbols() {
+        const displayItem = [...this.symbols];
         const extendedItems = [displayItem.shift(), displayItem.pop()];
         if (this.direction == DIRECTION.UP) {
             displayItem.reverse();
@@ -177,9 +173,9 @@ export class WheelController extends Component {
         this.stopAnimation();
         ids = ids.reverse();
         this.sortingSpinSlots();
-        const { displayItem, extendedItems } = this.getSlots();
+        const { displayItem, extendedItems } = this.getSymbols();
         for (const exItem of extendedItems) {
-            const target = exItem.getComponentInChildren(SymbolController);
+            const target = exItem.getComponent(SymbolController);
             const controller = this.symbolManager.getRandomSymbol();
             target.copyFrom(controller);
             target.show();
@@ -187,33 +183,32 @@ export class WheelController extends Component {
 
         let i = 0;
         for (const item of displayItem) {
-            const target = item.getComponentInChildren(SymbolController);
+            const target = item.getComponent(SymbolController);
             const id = ids[i];
-            let controller: SymbolController = null;
+            let symbolData: SymbolData = null;
             if (id == undefined) {
-                controller = this.symbolManager.getRandomSymbol();
+                symbolData = this.symbolManager.getRandomSymbol();
             } else {
-                controller = this.symbolManager.getSymbol(id);
+                symbolData = this.symbolManager.getSymbol(id);
             }
-            target.copyFrom(controller);
+            target.copyFrom(symbolData);
             target.show();
             i++;
         }
     }
 
-    private listSymbols(ids: string[]): SymbolController[] {
-        const results: SymbolController[] = [];
+    private listSymbols(ids: string[]): SymbolData[] {
+        const results: SymbolData[] = [];
         for (const id of ids) {
-            const controller = this.symbolManager.getSymbol(id);
-            results.push(controller);
+            const symbolData = this.symbolManager.getSymbol(id);
+            results.push(symbolData);
         }
         return results;
     }
 
-    debug() {
-        for (const slot of this.slots) {
-            const p0 = slot.getPosition();
-            console.log("debug", slot.name, p0.y);
+    showDebug(isDebug: boolean) {
+        for (const symbol of this.symbols) {
+            symbol.showDebug(isDebug);
         }
     }
 
@@ -255,18 +250,18 @@ export class WheelController extends Component {
 
     playWin(delay: number = 0) {
         this.sortingSpinSlots();
-        const { displayItem } = this.getSlots();
+        const { displayItem } = this.getSymbols();
         displayItem.reverse();
 
-        for (const symbol of this.slots) {
-            const symbolController = symbol.getComponentInChildren(SymbolController);
+        for (const symbol of this.symbols) {
+            const symbolController = symbol.getComponent(SymbolController);
             symbolController.stopAnimation();
         }
 
         for (const idx of this.winIdxs) {
             const symbol = displayItem[idx];
             if (symbol) {
-                const symbolController = symbol.getComponentInChildren(SymbolController);
+                const symbolController = symbol.getComponent(SymbolController);
                 this.scheduleOnce(() => {
                     symbolController.playTrigger();
                 }, delay);
@@ -275,15 +270,15 @@ export class WheelController extends Component {
     }
 
     stopAnimation() {
-        for (const slot of this.slots) {
-            const symbolController = slot.getComponentInChildren(SymbolController);
+        for (const symbol of this.symbols) {
+            const symbolController = symbol.getComponent(SymbolController);
             if (symbolController) {
                 symbolController.stopAnimation();
             }
         }
     }
 
-    stop(count: number, results: SymbolController[]) {
+    stop(count: number, results: SymbolData[]) {
         this.stopCountTarget = count;
         if (this.direction == DIRECTION.UP) {
             this.results = results;
@@ -301,10 +296,18 @@ export class WheelController extends Component {
             children.sort((a, b) => b.getPosition().y - a.getPosition().y);
         }
 
-        this.slots = children;
-        for (let i = 0; i < this.slots.length; i++) {
-            const slot = this.slots[i];
-            slot.name = `slot_${i}`;
+        const symbols: SymbolController[] = [];
+        for (const child of children) {
+            const symbol = child.getComponent(SymbolController);
+            if (symbol) {
+                symbols.push(symbol);
+            }
+        }
+
+        this.symbols = symbols;
+        for (let i = 0; i < this.symbols.length; i++) {
+            const symbol = this.symbols[i];
+            symbol.name = `symbol_${i}`;
         }
     }
 
@@ -340,7 +343,7 @@ export class WheelController extends Component {
             p1.y = this.minY;
         }
 
-        this.changeItem(endingNode);
+        this.changeItem(endingNode.getComponent(SymbolController));
         const stopTime = this.stopTime();
         tween(p0)
             .to(stopTime, p1, {
@@ -348,14 +351,14 @@ export class WheelController extends Component {
                 onUpdate: (target: Vec3, ratio: number) => {
                     this.endingNode.setPosition(target);
                     const diff = target.y - this.lastEndingPos.y;
-                    for (const child of this.slots) {
-                        if (child != this.endingNode) {
-                            const p0 = child.getPosition();
+                    for (const symbol of this.symbols) {
+                        if (symbol.node != this.endingNode) {
+                            const p0 = symbol.node.getPosition();
                             const { x, y, z } = p0;
-                            child.setPosition(x, y + diff, z);
-                            const isLoop = this.updateLoopY(child);
+                            symbol.node.setPosition(x, y + diff, z);
+                            const isLoop = this.updateLoopY(symbol.node);
                             if (isLoop) {
-                                this.changeItem(child);
+                                this.changeItem(symbol);
                             }
                         }
                     }
@@ -371,26 +374,26 @@ export class WheelController extends Component {
     }
 
     private playLanding() {
-        for (const slot of this.slots) {
-            const symbolController = slot.getComponentInChildren(SymbolController);
+        for (const symbol of this.symbols) {
+            const symbolController = symbol.getComponent(SymbolController);
             if (symbolController) {
                 symbolController.playLanding();
             }
         }
     }
 
-    private changeItem(root: Node) {
+    private changeItem(symbolController: SymbolController) {
         if (this.results.length > 0 && this.endingNode && this.stopCountTarget == 0) {
             const symbol = this.results.shift();
-            this._changeItem(root, symbol);
+            this._changeItem(symbolController, symbol);
         } else {
             const sk = this.symbolManager.getRandomSymbol();
-            this._changeItem(root, sk);
+            this._changeItem(symbolController, sk);
         }
     }
 
-    private _changeItem(root: Node, src: SymbolController) {
-        const target = root.getComponentInChildren(SymbolController);
+    private _changeItem(symbolController: SymbolController, src: SymbolData) {
+        const target = symbolController;
         target.copyFrom(src);
         target.show();
     }
@@ -403,20 +406,20 @@ export class WheelController extends Component {
             return;
         } else if (Math.abs(this.vDistance.y) > 0) {
             const distance = this.vDistance.y * deltaTime;
-            for (const children of this.slots) {
-                const { x, y, z } = children.getPosition();
-                children.setPosition(x, y + distance, z);
-                const isLooped = this.updateLoopY(children);
+            for (const symbol of this.symbols) {
+                const { x, y, z } = symbol.node.getPosition();
+                symbol.node.setPosition(x, y + distance, z);
+                const isLooped = this.updateLoopY(symbol.node);
                 if (isLooped) {
                     if (this.stopCountTarget > 0) {
                         this.stopCountTarget--;
                         if (this.stopCountTarget === 0) {
-                            this.doStop(children);
+                            this.doStop(symbol.node);
                         }
                     } else {
-                        const symbolController = children.getComponentInChildren(SymbolController);
+                        const symbolController = symbol.getComponent(SymbolController);
                         if (symbolController) {
-                            this.changeItem(children);
+                            this.changeItem(symbolController);
                         }
                     }
                 }

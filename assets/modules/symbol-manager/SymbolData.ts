@@ -1,4 +1,4 @@
-import { _decorator, Component, Enum, sp } from "cc";
+import { _decorator, Component, Enum, sp, Label, Color } from "cc";
 const { ccclass, property, executeInEditMode } = _decorator;
 
 export enum AnimationType {
@@ -33,7 +33,7 @@ export class SymbolData extends Component {
         type: [AnimationData],
     })
     animationData: AnimationData[] = [];
-    private animation: sp.Skeleton;
+    private skeleton: sp.Skeleton;
 
     @property({
         displayName: "Setup Animation By Type",
@@ -44,7 +44,7 @@ export class SymbolData extends Component {
     set setupAnimationByType(value: boolean) {
         if (value) {
             this.animationData = [];
-            const anis = this.animation.skeletonData.getAnimsEnum();
+            const anis = this.skeleton.skeletonData.getAnimsEnum();
             for (const k of Object.keys(anis)) {
                 let newType = AnimationType.NONE;
                 if (k.toLocaleLowerCase().includes("trigger")) {
@@ -70,7 +70,7 @@ export class SymbolData extends Component {
     set setupAnimationByNodeName(value: boolean) {
         if (value) {
             this.animationData = [];
-            const anis = this.animation.skeletonData.getAnimsEnum();
+            const anis = this.skeleton.skeletonData.getAnimsEnum();
             const nodeName = this.node.name.toLowerCase();
 
             for (const k of Object.keys(anis)) {
@@ -86,18 +86,36 @@ export class SymbolData extends Component {
         }
     }
 
+    private title: string = "";
+    private id: string = "";
+
+    get Title() {
+        return this.title;
+    }
+    get Id() {
+        return this.id;
+    }
+
+    private label: Label = null;
     private lastAnimationData: AnimationData = null;
 
     protected onLoad(): void {
-        this.animation = this.node.getComponent(sp.Skeleton);
-        // this.availableAnimations = Object.keys(this.animation.skeletonData.getAnimsEnum());
+        this.skeleton = this.node.getComponent(sp.Skeleton);
+        this.label = this.node.getComponentInChildren(Label);
+        this.setInfo("", "");
     }
 
-    private populateAnimationsFromSkeleton() {
-        console.log(this.animation.skeletonData.getAnimsEnum());
+    start() {
+        this.stop();
     }
 
-    start() {}
+    setInfo(id: string, name: string) {
+        if (this.label) {
+            this.label.string = `${id}\n${name}`;
+        }
+        this.id = id;
+        this.title = name;
+    }
 
     play(type: AnimationType, loop: boolean, speed: number | null = null) {
         console.log("play", this.node.name, ":", AnimationType[type]);
@@ -105,16 +123,16 @@ export class SymbolData extends Component {
         if (animationData) {
             this.lastAnimationData = animationData;
             if (speed != null) {
-                this.animation.timeScale = speed;
+                this.skeleton.timeScale = speed;
             } else {
-                this.animation.timeScale = animationData.speed;
+                this.skeleton.timeScale = animationData.speed;
             }
-            this.animation.setAnimation(0, animationData.name, loop);
+            this.skeleton.setAnimation(0, animationData.name, loop);
         }
     }
 
     copyFrom(randomSymbol: SymbolData) {
-        this.animation = randomSymbol.animation;
+        this.skeleton.skeletonData = randomSymbol.skeleton.skeletonData;
         this.animationData = randomSymbol.animationData;
     }
 
@@ -130,7 +148,7 @@ export class SymbolData extends Component {
 
     continueStop() {
         console.log("continueStop", this.node.name);
-        const trackEntry = this.animation.getCurrent(0);
+        const trackEntry = this.skeleton.getCurrent(0);
         if (trackEntry) {
             trackEntry.loop = false;
             console.log(`Changed ${trackEntry.animation.name} from loop to non-loop`);
@@ -141,8 +159,16 @@ export class SymbolData extends Component {
     stop() {
         const animationData = this.findAnimationData(AnimationType.TRIGGER);
         if (animationData) {
-            this.animation.setAnimation(0, animationData.name, false);
-            this.animation.timeScale = 0;
+            this.skeleton.setAnimation(0, animationData.name, false);
+            this.skeleton.timeScale = 0;
         }
+    }
+
+    setColor(color: Color) {
+        this.skeleton.color = color;
+    }
+
+    get Color() {
+        return this.skeleton.color;
     }
 }

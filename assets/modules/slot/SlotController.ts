@@ -1,8 +1,8 @@
 import { _decorator, Component, Node } from "cc";
-import { DIRECTION, STATE, WheelController } from "./WheelController";
-import { WinResultItem } from "../rg-api/apidata";
+import { DIRECTION, STATE, ReelController } from "./ReelController";
+import { WinResultItem, ApiResponse } from "../rg-api/apidata";
 import { SymbolManager } from "../symbol-manager/SymbolManager";
-import { randomMinMax } from "../utils/utils";
+import { extractStrWheels, extractWinResult, randomMinMax } from "../utils/utils";
 const { ccclass, property } = _decorator;
 
 const SPIN_TIME = 1;
@@ -31,6 +31,7 @@ export interface SlotControllerSettings {
     spinTime: number;
     playWinDelay: number;
     stopOptions: SlotStopDelay | SlotStopRandom | SlotStopDelayOrder;
+    debug: boolean;
 }
 
 // เพิ่ม Type Guard functions
@@ -51,7 +52,7 @@ export class SlotController extends Component {
     private spinState: SPIN_STATE = SPIN_STATE.STOPED;
     private spinTime = 0;
     private spinTimeMax = 0;
-    private wheelControllers: WheelController[] = [];
+    private reelControllers: ReelController[] = [];
     private sWheels: string[][] = [];
     private winResult: WinResultItem[] = [];
     private settings: SlotControllerSettings = {
@@ -59,72 +60,98 @@ export class SlotController extends Component {
         spinTime: SPIN_TIME,
         playWinDelay: 0.5,
         stopOptions: null,
+        debug: false,
     };
 
     protected onLoad(): void {}
+    private rowCount = 0;
+    private colCount = 0;
+
+    get RowCount() {
+        return this.rowCount;
+    }
+
+    get ColCount() {
+        return this.colCount;
+    }
 
     start() {}
 
     setup(settings: SlotControllerSettings) {
         this.settings = settings;
-        this.wheelControllers = this.getComponentsInChildren(WheelController);
+        this.reelControllers = this.getComponentsInChildren(ReelController);
         this.spinTimeMax = settings.spinTime;
         this.spinState = SPIN_STATE.STOPED;
-        for (let i = 0; i < this.wheelControllers.length; i++) {
-            const wheel = this.wheelControllers[i];
-            wheel.setup(i, this.settings.symbolManager);
-            wheel.onComplete((self: WheelController) => {
+        this.colCount = this.reelControllers.length;
+        this.rowCount = this.reelControllers[0].getSymbols().displayItem.length;
+        for (let i = 0; i < this.reelControllers.length; i++) {
+            const reel = this.reelControllers[i];
+            reel.setup(i, this.settings.symbolManager);
+            reel.onComplete((self: ReelController) => {
                 let idleCount = 0;
-                for (const wheel of this.wheelControllers) {
-                    if (wheel.State == STATE.IDLE) {
+                for (const reel of this.reelControllers) {
+                    if (reel.State == STATE.IDLE) {
                         idleCount++;
                     }
                 }
-                if (idleCount == this.wheelControllers.length) {
-                    for (const wheel of this.wheelControllers) {
-                        wheel.playWin(this.settings.playWinDelay);
+                if (idleCount == this.reelControllers.length) {
+                    for (const reel of this.reelControllers) {
+                        reel.playWin(this.settings.playWinDelay);
                     }
                 }
             });
+            this.scheduleOnce(() => {
+                reel.showDebug(this.settings.debug);
+            }, 0);
         }
     }
 
-    fillLogin(sWheels: string[][]) {
+    fillLogin(apiResponse: ApiResponse) {
+        const sWheels: string[][] = extractStrWheels(apiResponse);
         if (sWheels == null) {
             return;
         }
 
-        for (let i = 0; i < sWheels.length; i++) {
-            const wheelController = this.wheelControllers[i];
+        if (sWheels.length != this.reelControllers.length) {
+            console.warn(
+                `sWheels.length(${sWheels.length}) != this.reelControllers.length(${this.reelControllers.length}) `
+            );
+        }
+
+        const minLoop = Math.min(sWheels.length, this.reelControllers.length);
+        for (let i = 0; i < minLoop; i++) {
+            const reelController = this.reelControllers[i];
             const symbols = sWheels[i];
-            wheelController.fillSymbols(symbols);
+            reelController.fillSymbols(symbols);
         }
     }
 
     stopAnimation() {
-        for (const wheel of this.wheelControllers) {
-            wheel.stopAnimation();
+        for (const reel of this.reelControllers) {
+            reel.stopAnimation();
         }
     }
 
     spins(direction: DIRECTION = DIRECTION.DOWN) {
         this.spinState = SPIN_STATE.SPINNING;
         this.spinTime = this.spinTimeMax;
-        for (const wheel of this.wheelControllers) {
+        for (const reel of this.reelControllers) {
             this.scheduleOnce(() => {
-                wheel.spin(direction);
+                reel.spin(direction);
             }, 0.5);
         }
     }
 
-    stops(sWheels: string[][], winResult: WinResultItem[]) {
+    stops(apiResponse: ApiResponse) {
+        const sWheels: string[][] = extractStrWheels(apiResponse);
+        const winResult: WinResultItem[] = extractWinResult(apiResponse);
         this.spinState = SPIN_STATE.STOPING;
         this.sWheels = sWheels;
         this.winResult = winResult;
 
-        if (sWheels.length != this.wheelControllers.length) {
+        if (sWheels.length != this.reelControllers.length) {
             console.error(
-                `sWheels.length(${sWheels.length}) != this.wheelControllers.length(${this.wheelControllers.length}) `
+                `sWheels.length(${sWheels.length}) != this.reelControllers.length(${this.reelControllers.length}) `
             );
             return null;
         }
@@ -151,17 +178,17 @@ export class SlotController extends Component {
         this.spinTime = 0;
         for (let i = 0; i < this.sWheels.length; i++) {
             const delay = this.getStopDelay(i);
-            const wheel = this.wheelControllers[i];
-            if (wheel == undefined) {
+            const reel = this.reelControllers[i];
+            if (reel == undefined) {
                 return;
             }
             const sSymbols = this.sWheels[i];
             this.scheduleOnce(() => {
-                wheel.stopByIds(3, sSymbols);
+                reel.stopByIds(3, sSymbols);
                 for (const win of this.winResult) {
                     const vals = win.AWP[i];
                     if (vals != undefined) {
-                        wheel.win(vals);
+                        reel.win(vals);
                     }
                 }
             }, delay);

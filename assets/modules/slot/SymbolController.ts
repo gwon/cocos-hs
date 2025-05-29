@@ -1,4 +1,5 @@
 import { _decorator, Component, easing, Label, sp, Tween, tween, Vec3, Node, RichText } from "cc";
+import { AnimationType, SymbolData } from "../symbol-manager/SymbolData";
 const { ccclass, property } = _decorator;
 
 export enum SYMBOL_ANIMATION {
@@ -9,14 +10,9 @@ export enum SYMBOL_ANIMATION {
 
 @ccclass("SymbolController")
 export class SymbolController extends Component {
-    private triggerAnimation: string = "";
-    private landingAnimation: string = "";
-    private loopingAnimation: string = "";
-    private nameAnimation: string = "";
-    private skeleton: sp.Skeleton;
-    private richText: RichText;
+    private symbolData: SymbolData;
+    private label: Label;
     private tweening: Tween<Node> | null;
-    private animatinoNames: string[] = [];
     private id: string = "";
     private title: string = "";
 
@@ -28,20 +24,17 @@ export class SymbolController extends Component {
         this.node.name = title;
         this.id = id;
         this.title = title;
-        if (!this.richText) {
-            this.richText = this.node.getComponentInChildren(RichText);
+        if (!this.label) {
+            this.label = this.node.getComponentInChildren(Label);
         }
-        if (this.richText) {
-            this.richText.string = `<color=#ffffff>${title}</color>\n<color=#00ff00>${id}</color>`;
+        if (this.label) {
+            this.label.string = title + "\n" + id;
         }
     }
 
-    hidden() {
-        this.skeleton.enabled = false;
-    }
+    hidden() {}
 
     show() {
-        this.skeleton.enabled = true;
         this.setup();
         this.stopAnimation();
     }
@@ -54,43 +47,28 @@ export class SymbolController extends Component {
         return this.title;
     }
 
-    private setup0() {
-        if (!this.skeleton) {
-            this.skeleton = this.node.getComponent(sp.Skeleton);
-        }
-    }
-
     private setup() {
-        this.setup0();
-        this.animatinoNames = Object.keys(this.skeleton.skeletonData.getAnimsEnum());
-
-        this.triggerAnimation = "";
-        this.landingAnimation = "";
-        this.loopingAnimation = "";
-        this.nameAnimation = "";
-        for (const name of this.animatinoNames) {
-            if (name.includes(SYMBOL_ANIMATION.TRIGGER)) {
-                this.triggerAnimation = name;
-            } else if (name.includes(SYMBOL_ANIMATION.LANDING)) {
-                this.landingAnimation = name;
-            } else if (name.includes(SYMBOL_ANIMATION.LOOPING)) {
-                this.loopingAnimation = name;
-            } else if (name == this.title) {
-                this.nameAnimation = name;
+        if (!this.symbolData) {
+            this.symbolData = this.node.getComponent(SymbolData);
+            if (!this.symbolData) {
+                console.warn("SymbolData not found", this.node.name);
             }
+        }
+        if (!this.label) {
+            this.label = this.node.getComponentInChildren(Label);
         }
     }
 
     private playTextAnimation() {
-        if (this.richText.string.length > 0) {
+        if (this.label.string.length > 0) {
             this.stopTextAnimation();
-            this.tweening = tween(this.richText.node)
+            this.tweening = tween(this.label.node)
                 .to(0.5, { scale: new Vec3(1.7, 1.7, 1.7) }, { easing: easing.quadOut })
                 .to(0.5, { scale: new Vec3(1, 1, 1) }, { easing: easing.quadIn })
                 .union()
                 .repeatForever()
                 .start();
-        } else if (this.richText.string.length == 0) {
+        } else if (this.label.string.length == 0) {
             this.stopTextAnimation();
         }
     }
@@ -98,51 +76,38 @@ export class SymbolController extends Component {
     private stopTextAnimation() {
         if (this.tweening) {
             this.tweening.stop();
-            this.richText.node.scale = new Vec3(1, 1, 1);
+            this.label.node.scale = new Vec3(1, 1, 1);
             this.tweening = null;
         }
     }
 
     playLanding(timeScale: number = 1, looping: boolean = true) {
-        this.skeleton.paused = false;
-        this.skeleton.timeScale = timeScale;
-        if (this.landingAnimation) {
-            this.skeleton.setAnimation(0, this.landingAnimation, looping);
-        } else if (this.nameAnimation) {
-            this.skeleton.setAnimation(0, this.nameAnimation, true);
-            this.skeleton.paused = true;
-        }
+        this.symbolData.play(AnimationType.LANDING, looping, timeScale);
     }
 
     playTrigger() {
-        this.skeleton.paused = false;
-        this.skeleton.timeScale = 1;
-        if (this.triggerAnimation) {
-            this.skeleton.setAnimation(0, this.triggerAnimation, true);
-        } else if (this.nameAnimation) {
-            this.skeleton.setAnimation(0, this.nameAnimation, true);
-        } else {
-            this.stopAnimation();
-        }
-        this.playTextAnimation();
+        this.symbolData.play(AnimationType.TRIGGER, true);
     }
 
     playLooping() {
-        if (this.loopingAnimation) {
-            this.skeleton.setAnimation(0, this.loopingAnimation, true);
-        }
+        this.symbolData.play(AnimationType.LOOPING, true);
     }
 
     stopAnimation() {
-        this.playLanding(1, false);
+        this.symbolData.stop();
         this.stopTextAnimation();
     }
 
-    copyFrom(src: SymbolController) {
-        this.setup0();
-        this.setInfo(src.Id, src.Title);
-        this.node.name = src.Title;
-        this.skeleton.skeletonData = src.skeleton.skeletonData;
-        this.skeleton.color = src.skeleton.color;
+    copyFrom(src: SymbolData) {
+        this.symbolData.copyFrom(src);
+        this.symbolData.setInfo(src.Id, src.Title);
+        this.symbolData.stop();
+        this.symbolData.setColor(src.Color);
+    }
+
+    showDebug(isDebug: boolean) {
+        if (this.label) {
+            this.label.enabled = isDebug;
+        }
     }
 }

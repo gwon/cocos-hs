@@ -1,4 +1,4 @@
-import { _decorator, Button, Component, NodePool } from "cc";
+import { _decorator, Component, instantiate, Color } from "cc";
 import { SymbolData } from "./SymbolData";
 import { getRandomFromArray } from "../utils/utils";
 const { ccclass } = _decorator;
@@ -7,12 +7,19 @@ const { ccclass } = _decorator;
 export class SymbolManager extends Component {
     private srcNodes: Map<string, SymbolData> = new Map();
     private dic: Map<string, string> = new Map();
+    private defaultSymbol: SymbolData = null;
 
     onLoad() {
         this.setup0();
     }
 
-    start() {}
+    start() {
+        if (this.dic.size == 0) {
+            for (const [key, symbol] of this.srcNodes) {
+                symbol.setInfo(symbol.node.name, symbol.node.name);
+            }
+        }
+    }
 
     private setup0() {
         if (this.srcNodes.size > 0) {
@@ -22,11 +29,20 @@ export class SymbolManager extends Component {
         for (const symbol of symbolItems) {
             this.srcNodes.set(symbol.node.name, symbol);
         }
+        const defaultNode = instantiate(symbolItems[0].node);
+        this.node.addChild(defaultNode);
+        this.defaultSymbol = defaultNode.getComponent(SymbolData);
+        this.defaultSymbol.setInfo("???", "???");
+        this.defaultSymbol.setColor(new Color(0, 0, 0, 255));
     }
 
     setup(dic: Map<string, string>) {
         this.setup0();
         this.dic = dic;
+        for (const [key, value] of this.dic) {
+            const symbol = this.srcNodes.get(value);
+            symbol.setInfo(key, value);
+        }
     }
 
     private getRandomSrcName(): string {
@@ -55,8 +71,8 @@ export class SymbolManager extends Component {
         const srcName = this.translateId(id);
         const controller = this.srcNodes.get(srcName);
         if (controller == null) {
-            console.error(`SkeletonData is not found in ${srcName}`);
-            return null;
+            this.defaultSymbol.setInfo(id, id);
+            return this.defaultSymbol;
         }
         return controller;
     }
