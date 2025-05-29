@@ -1,0 +1,167 @@
+
+Wild.png
+size: 1228,1027
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Bg
+  rotate: true
+  xy: 2, 3
+  size: 421, 509
+  orig: 421, 509
+  offset: 0, 0
+  index: -1
+Moon
+  rotate: false
+  xy: 524, 720
+  size: 311, 305
+  orig: 311, 305
+  offset: 0, 0
+  index: -1
+Mountain
+  rotate: true
+  xy: 1024, 74
+  size: 383, 167
+  orig: 383, 167
+  offset: 0, 0
+  index: -1
+Wolf
+  rotate: true
+  xy: 524, 578
+  size: 140, 137
+  orig: 140, 137
+  offset: 0, 0
+  index: -1
+font shadow
+  rotate: true
+  xy: 1024, 459
+  size: 566, 202
+  orig: 574, 210
+  offset: 4, 4
+  index: -1
+font wild
+  rotate: true
+  xy: 837, 501
+  size: 524, 163
+  orig: 524, 163
+  offset: 0, 0
+  index: -1
+frame
+  rotate: false
+  xy: 2, 426
+  size: 520, 599
+  orig: 520, 646
+  offset: 0, 23
+  index: -1
+frame shadow
+  rotate: true
+  xy: 513, 3
+  size: 421, 509
+  orig: 421, 509
+  offset: 0, 0
+  index: -1
+winframe_000
+  rotate: false
+  xy: 1024, 2
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_001
+  rotate: false
+  xy: 1096, 2
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_002
+  rotate: false
+  xy: 524, 429
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_003
+  rotate: false
+  xy: 596, 429
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_004
+  rotate: false
+  xy: 668, 429
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_005
+  rotate: false
+  xy: 740, 429
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_006
+  rotate: false
+  xy: 812, 429
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_007
+  rotate: false
+  xy: 884, 429
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_008
+  rotate: false
+  xy: 524, 506
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_009
+  rotate: false
+  xy: 596, 506
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_010
+  rotate: false
+  xy: 663, 648
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_011
+  rotate: false
+  xy: 735, 648
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_012
+  rotate: false
+  xy: 668, 576
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_013
+  rotate: false
+  xy: 668, 504
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_014
+  rotate: false
+  xy: 740, 576
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1

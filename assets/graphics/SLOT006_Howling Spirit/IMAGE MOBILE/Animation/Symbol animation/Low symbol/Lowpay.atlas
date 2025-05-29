@@ -1,0 +1,195 @@
+
+Lowpay.png
+size: 1252,554
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+A
+  rotate: true
+  xy: 2, 16
+  size: 224, 276
+  orig: 224, 276
+  offset: 0, 0
+  index: -1
+J
+  rotate: false
+  xy: 1044, 282
+  size: 197, 270
+  orig: 197, 270
+  offset: 0, 0
+  index: -1
+K
+  rotate: true
+  xy: 280, 31
+  size: 223, 280
+  orig: 223, 280
+  offset: 0, 0
+  index: -1
+Q
+  rotate: false
+  xy: 2, 242
+  size: 260, 310
+  orig: 260, 310
+  offset: 0, 0
+  index: -1
+leaf A
+  rotate: true
+  xy: 1188, 216
+  size: 64, 62
+  orig: 64, 63
+  offset: 0, 1
+  index: -1
+leaf A2
+  rotate: false
+  xy: 782, 265
+  size: 260, 287
+  orig: 260, 287
+  offset: 0, 0
+  index: -1
+leaf J
+  rotate: false
+  xy: 1033, 2
+  size: 64, 62
+  orig: 64, 62
+  offset: 0, 0
+  index: -1
+leaf J2
+  rotate: false
+  xy: 562, 3
+  size: 253, 251
+  orig: 253, 251
+  offset: 0, 0
+  index: -1
+leaf K
+  rotate: false
+  xy: 1099, 2
+  size: 64, 62
+  orig: 64, 62
+  offset: 0, 0
+  index: -1
+leaf K2
+  rotate: false
+  xy: 264, 256
+  size: 257, 296
+  orig: 257, 296
+  offset: 0, 0
+  index: -1
+leaf Q
+  rotate: true
+  xy: 1177, 145
+  size: 63, 61
+  orig: 64, 62
+  offset: 0, 1
+  index: -1
+leaf Q2
+  rotate: false
+  xy: 523, 256
+  size: 257, 296
+  orig: 257, 296
+  offset: 0, 0
+  index: -1
+winframe_000
+  rotate: false
+  xy: 817, 121
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_001
+  rotate: false
+  xy: 889, 193
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_002
+  rotate: false
+  xy: 817, 49
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_003
+  rotate: false
+  xy: 889, 121
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_004
+  rotate: false
+  xy: 961, 193
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_005
+  rotate: false
+  xy: 889, 49
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_006
+  rotate: false
+  xy: 961, 121
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_007
+  rotate: false
+  xy: 961, 49
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_008
+  rotate: false
+  xy: 1044, 210
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_009
+  rotate: false
+  xy: 1116, 210
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_010
+  rotate: false
+  xy: 1033, 138
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_011
+  rotate: false
+  xy: 1033, 66
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_012
+  rotate: false
+  xy: 1105, 138
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_013
+  rotate: false
+  xy: 1105, 66
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_014
+  rotate: false
+  xy: 817, 193
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1

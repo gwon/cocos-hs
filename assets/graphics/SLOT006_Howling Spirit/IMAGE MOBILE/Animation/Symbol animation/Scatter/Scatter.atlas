@@ -1,0 +1,300 @@
+
+Scatter.png
+size: 943,1031
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+deco 1
+  rotate: true
+  xy: 2, 67
+  size: 43, 266
+  orig: 43, 266
+  offset: 0, 0
+  index: -1
+deco 2
+  rotate: true
+  xy: 694, 252
+  size: 37, 52
+  orig: 37, 52
+  offset: 0, 0
+  index: -1
+deco 2.1
+  rotate: false
+  xy: 383, 137
+  size: 110, 108
+  orig: 112, 108
+  offset: 1, 0
+  index: -1
+deco 2.2
+  rotate: true
+  xy: 837, 352
+  size: 31, 104
+  orig: 39, 104
+  offset: 1, 0
+  index: -1
+deco 2.3
+  rotate: true
+  xy: 577, 232
+  size: 35, 87
+  orig: 37, 89
+  offset: 1, 2
+  index: -1
+deco 3
+  rotate: false
+  xy: 886, 177
+  size: 40, 51
+  orig: 40, 51
+  offset: 0, 0
+  index: -1
+deco 3.1
+  rotate: true
+  xy: 383, 77
+  size: 58, 145
+  orig: 58, 146
+  offset: 0, 0
+  index: -1
+deco 4
+  rotate: false
+  xy: 674, 126
+  size: 36, 52
+  orig: 36, 52
+  offset: 0, 0
+  index: -1
+deco 4.1
+  rotate: false
+  xy: 270, 2
+  size: 110, 108
+  orig: 112, 108
+  offset: 1, 0
+  index: -1
+deco 4.2
+  rotate: true
+  xy: 837, 319
+  size: 31, 104
+  orig: 34, 104
+  offset: 2, 0
+  index: -1
+deco 4.3
+  rotate: false
+  xy: 902, 230
+  size: 35, 87
+  orig: 37, 89
+  offset: 1, 2
+  index: -1
+deco 5
+  rotate: true
+  xy: 2, 22
+  size: 43, 266
+  orig: 43, 266
+  offset: 0, 0
+  index: -1
+dreamcatcher
+  rotate: false
+  xy: 2, 112
+  size: 379, 401
+  orig: 380, 401
+  offset: 1, 0
+  index: -1
+feather 1
+  rotate: true
+  xy: 630, 269
+  size: 219, 62
+  orig: 219, 62
+  offset: 0, 0
+  index: -1
+feather 10
+  rotate: false
+  xy: 837, 385
+  size: 76, 190
+  orig: 76, 190
+  offset: 0, 0
+  index: -1
+feather 2
+  rotate: false
+  xy: 382, 8
+  size: 173, 67
+  orig: 173, 67
+  offset: 0, 0
+  index: -1
+feather 3
+  rotate: true
+  xy: 812, 577
+  size: 184, 123
+  orig: 184, 123
+  offset: 0, 0
+  index: -1
+feather 4
+  rotate: false
+  xy: 812, 763
+  size: 119, 266
+  orig: 119, 266
+  offset: 0, 0
+  index: -1
+feather 5
+  rotate: false
+  xy: 758, 321
+  size: 77, 190
+  orig: 77, 190
+  offset: 0, 0
+  index: -1
+feather 6
+  rotate: true
+  xy: 694, 291
+  size: 220, 62
+  orig: 220, 62
+  offset: 0, 0
+  index: -1
+feather 7
+  rotate: true
+  xy: 505, 304
+  size: 184, 123
+  orig: 184, 123
+  offset: 0, 0
+  index: -1
+feather 8
+  rotate: false
+  xy: 383, 247
+  size: 120, 266
+  orig: 120, 266
+  offset: 0, 0
+  index: -1
+feather 9
+  rotate: false
+  xy: 495, 163
+  size: 173, 67
+  orig: 173, 67
+  offset: 0, 0
+  index: -1
+light
+  rotate: false
+  xy: 2, 515
+  size: 522, 514
+  orig: 535, 530
+  offset: 6, 8
+  index: -1
+shadow
+  rotate: true
+  xy: 526, 490
+  size: 539, 153
+  orig: 545, 158
+  offset: 3, 3
+  index: -1
+sparkle_blue2_000
+  rotate: false
+  xy: 577, 272
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+winframe_000
+  rotate: false
+  xy: 505, 232
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_001
+  rotate: false
+  xy: 530, 91
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_002
+  rotate: false
+  xy: 602, 91
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_003
+  rotate: false
+  xy: 557, 19
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_004
+  rotate: false
+  xy: 629, 19
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_005
+  rotate: false
+  xy: 758, 249
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_006
+  rotate: false
+  xy: 830, 247
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_007
+  rotate: false
+  xy: 670, 180
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_008
+  rotate: false
+  xy: 742, 177
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_009
+  rotate: false
+  xy: 814, 175
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_010
+  rotate: false
+  xy: 712, 105
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_011
+  rotate: false
+  xy: 701, 33
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_012
+  rotate: false
+  xy: 784, 103
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_013
+  rotate: false
+  xy: 773, 31
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+winframe_014
+  rotate: false
+  xy: 856, 103
+  size: 70, 70
+  orig: 180, 180
+  offset: 55, 55
+  index: -1
+word scatter
+  rotate: true
+  xy: 681, 513
+  size: 516, 129
+  orig: 516, 129
+  offset: 0, 0
+  index: -1

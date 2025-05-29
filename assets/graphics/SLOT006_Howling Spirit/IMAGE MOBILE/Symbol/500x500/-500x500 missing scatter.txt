@@ -1,0 +1,3 @@
+-500x500 missing scatter
+
+-symbol scatter and wild wrong file 

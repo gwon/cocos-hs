@@ -1,0 +1,8 @@
+Howling Spirit layout animation
+
+Basegame_animation:
+-The Clouds moving from left to right
+-The Flower patel coming from left to right
+
+Freegame_animation:
+-In free game have Aurora effect on the top

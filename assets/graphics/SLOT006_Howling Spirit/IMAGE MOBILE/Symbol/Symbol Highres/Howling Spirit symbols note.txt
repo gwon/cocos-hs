@@ -1,0 +1,16 @@
+Howling Spirit symbols note:
+
+All Static Image is bigger than the actual size, please resize it before use to get the clear Image. 
+
+scale size:
+
+H1 (0.150 x 0.150)
+H2 (0.150 x 0.150)
+H3 (0.150 x 0.150)
+H4 (0.150 x 0.150)
+Lowpay1 (0.130 x 0.130)
+Lowpay2 (0.130 x 0.130)
+Lowpay3 (0.130 x 0.130)
+Lowpay4 (0.130 x 0.130)
+wild (0.150 x 0.150)
+scatter (0.149 x 0.149)

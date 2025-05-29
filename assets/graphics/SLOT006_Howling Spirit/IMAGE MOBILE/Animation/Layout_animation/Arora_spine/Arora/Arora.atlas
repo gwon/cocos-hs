@@ -1,0 +1,34 @@
+
+Arora.png
+size: 1988,409
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+001_000
+  rotate: false
+  xy: 1575, 16
+  size: 411, 391
+  orig: 700, 500
+  offset: 289, 109
+  index: -1
+002_000
+  rotate: false
+  xy: 2, 2
+  size: 700, 405
+  orig: 700, 500
+  offset: 0, 0
+  index: -1
+003_000
+  rotate: true
+  xy: 1158, 16
+  size: 391, 415
+  orig: 700, 500
+  offset: 309, 12
+  index: -1
+004_000
+  rotate: true
+  xy: 704, 24
+  size: 383, 452
+  orig: 700, 500
+  offset: 0, 48
+  index: -1
