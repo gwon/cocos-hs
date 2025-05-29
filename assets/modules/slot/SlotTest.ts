@@ -1,8 +1,9 @@
 import { _decorator, Button, Component, Label } from "cc";
 import { SlotController } from "./SlotController";
 import { SymbolManager } from "../symbol-manager/SymbolManager";
-import { extractStrWheels, getRandomFromArray } from "../utils/utils";
+import { getRandomFromArray } from "../utils/utils";
 import { loginData } from "../mockdatas/login";
+import { getDataFrom as genDataFrom } from "../mockdatas/mockdata";
 const { ccclass, property } = _decorator;
 
 @ccclass("SlotTest")
@@ -50,7 +51,7 @@ export class SlotTest extends Component {
             spinTime: 1,
             playWinDelay: 1,
             stopOptions: {
-                delay: 1,
+                orderDelay: 1,
             },
             debug: true,
         });
@@ -75,7 +76,9 @@ export class SlotTest extends Component {
         return ids;
     }
 
-    randomSSlot(ids: string[]) {
+    randomSSlot(extIds: string[]) {
+        const ids = this.allId();
+        ids.push(...extIds);
         const maxRow = this.slotController.RowCount;
         const maxCol = this.slotController.ColCount;
         const slot: string[][] = [];
@@ -86,13 +89,15 @@ export class SlotTest extends Component {
             }
             slot.push(reel);
         }
-        return slot;
+
+        this.lbIds.string = slot.map((row) => row.join(",")).join("\n");
+        const data = genDataFrom(slot);
+        return data;
     }
 
     fill() {
-        const ids = this.allId();
-        const slot = this.randomSSlot(ids);
-        this.slotController.fillLogin(slot);
+        const data = this.randomSSlot([]);
+        this.slotController.fillLogin(data);
     }
 
     spin() {
@@ -100,21 +105,14 @@ export class SlotTest extends Component {
     }
 
     stop() {
-        const ids = this.allId();
-        const slot = this.randomSSlot(ids);
-        const sWheels: string[][] = extractStrWheels(loginData);
-
-        this.lbIds.string = sWheels.map((row) => row.join(",")).join("\n");
-
-        this.slotController.stops(loginData);
+        const normalData = this.randomSSlot([]);
+        this.slotController.stops(normalData);
     }
 
     fillError() {
         const fakeIds = ["123", "356", "453", "444", "234"];
-        const ids = this.allId();
-        ids.push(...fakeIds);
-        const slot = this.randomSSlot(ids);
-        this.slotController.fillLogin(slot);
+        const data = this.randomSSlot(fakeIds);
+        this.slotController.fillLogin(data);
     }
 
     fillLogin() {

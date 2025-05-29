@@ -1,4 +1,4 @@
-import { ApiResponse } from "../dto/apidata";
+import { ApiResponse } from "../rg-api/apidata";
 
 export const winData: ApiResponse = {
     Player: {

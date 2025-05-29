@@ -1,4 +1,4 @@
-import { ApiResponse } from "../dto/apidata";
+import { ApiResponse } from "../rg-api/apidata";
 
 const t6Data: ApiResponse = {
     Current: {

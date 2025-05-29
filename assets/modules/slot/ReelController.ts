@@ -83,6 +83,7 @@ export class ReelController extends Component {
 
         this.sortingSpinSlots();
         this.addTopAndBottomItems();
+        console.log("this.symbols", this.symbols);
     }
 
     private stopTime() {

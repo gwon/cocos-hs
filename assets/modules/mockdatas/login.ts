@@ -1,12 +1,4 @@
-import { _decorator, Button, Component, EventKeyboard, Input, input, KeyCode, Node } from "cc";
-import { GameAPI } from "../GameAPI";
-import { ApiResponse } from "../dto/apidata";
-import { DIRECTION } from "../WheelController";
-import { SlotController } from "../SlotController";
-import { extractStrWheels, extractWinResult } from "../utils";
-import { SymbolManager } from "../SymbolManager";
-import { PLAY_WIN_DELAY } from "../configs";
-const { ccclass, property } = _decorator;
+import { ApiResponse } from "../rg-api/apidata";
 
 export const loginData: ApiResponse = {
     Player: {

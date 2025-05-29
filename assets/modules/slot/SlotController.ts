@@ -64,15 +64,13 @@ export class SlotController extends Component {
     };
 
     protected onLoad(): void {}
-    private rowCount = 0;
-    private colCount = 0;
 
     get RowCount() {
-        return this.rowCount;
+        return this.reelControllers[0].DisplaySize;
     }
 
     get ColCount() {
-        return this.colCount;
+        return this.reelControllers.length;
     }
 
     start() {}
@@ -82,8 +80,6 @@ export class SlotController extends Component {
         this.reelControllers = this.getComponentsInChildren(ReelController);
         this.spinTimeMax = settings.spinTime;
         this.spinState = SPIN_STATE.STOPED;
-        this.colCount = this.reelControllers.length;
-        this.rowCount = this.reelControllers[0].getSymbols().displayItem.length;
         for (let i = 0; i < this.reelControllers.length; i++) {
             const reel = this.reelControllers[i];
             reel.setup(i, this.settings.symbolManager);
