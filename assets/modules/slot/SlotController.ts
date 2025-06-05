@@ -73,6 +73,8 @@ export class SlotController extends Component {
         return this.reelControllers.length;
     }
 
+    private completeCallback: () => void = () => {};
+
     start() {}
 
     setup(settings: SlotControllerSettings) {
@@ -94,12 +96,17 @@ export class SlotController extends Component {
                     for (const reel of this.reelControllers) {
                         reel.playWin(this.settings.playWinDelay);
                     }
+                    this.completeCallback();
                 }
             });
             this.scheduleOnce(() => {
                 reel.showDebug(this.settings.debug);
             }, 0);
         }
+    }
+
+    onComplete(callback: () => void) {
+        this.completeCallback = callback;
     }
 
     fillLogin(apiResponse: ApiResponse) {

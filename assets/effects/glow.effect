@@ -1,0 +1,81 @@
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: glow-vs:main
+      frag: glow-fs:main
+      properties:
+        glowColor: { value: [1, 1, 0, 1] }
+        glowSize: { value: 5.0 }
+        glowIntensity: { value: 2.0 }
+        blurSamples: { value: 4.0 }
+        u_texSize: { value: [512, 512, 0.00195, 0.00195] }
+%}
+
+CCProgram glow-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec2 v_texCoord;
+  out vec4 v_color;
+
+  void main () {
+    gl_Position = cc_matViewProj * vec4(a_position, 1);
+    v_texCoord = a_texCoord;
+    v_color = a_color;
+  }
+}%
+
+CCProgram glow-fs %{
+  precision highp float;
+  
+  in vec2 v_texCoord;
+  in vec4 v_color;
+  
+  uniform sampler2D u_texture;
+  uniform GlowUniforms {
+    vec4 glowColor;
+    vec4 u_texSize;
+    float glowSize;
+    float glowIntensity;
+    float blurSamples;
+  };
+
+  void main () {
+    vec4 originalColor = texture(u_texture, v_texCoord);
+    
+    if (originalColor.a > 0.1) {
+      gl_FragColor = originalColor * v_color;
+      return;
+    }
+    
+    vec4 glow = vec4(0.0);
+    vec2 texelSize = u_texSize.zw;
+    
+    // Gaussian-like blur for glow with fixed loop bounds
+    for (float x = -8.0; x <= 8.0; x += 1.0) {
+      for (float y = -8.0; y <= 8.0; y += 1.0) {
+        if (abs(x) > blurSamples || abs(y) > blurSamples) continue;
+        
+        vec2 offset = vec2(x, y) * texelSize * glowSize;
+        float weight = 1.0 - (length(vec2(x, y)) / blurSamples);
+        weight = max(0.0, weight);
+        
+        vec4 sample = texture(u_texture, v_texCoord + offset);
+        glow += sample * weight;
+      }
+    }
+    
+    glow.rgb = glowColor.rgb;
+    glow.a *= glowIntensity;
+    
+    if (glow.a > 0.01) {
+      gl_FragColor = glow;
+    } else {
+      discard;
+    }
+  }
+}%

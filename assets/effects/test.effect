@@ -1,0 +1,111 @@
+# Outline Effect 2
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendDstAlpha: one_minus_src_alpha
+      rasterizerState:
+        cullMode: none
+      properties:
+        outlineAlphaThreshold: { value: 0.01 }
+        outlineColor: { value: [1, 0, 0, 1], editor: {type: color} }
+        outlineThickness: { value: 5.0 }
+%}
+
+CCProgram sprite-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  #if USE_LOCAL
+    #include <builtin/uniforms/cc-local>
+  #endif 
+  #if SAMPLE_FROM_RT
+    #include <common/common-define>
+  #endif
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec4 color;
+  out vec2 uv0;
+
+  vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if USE_LOCAL
+      pos = cc_matWorld * pos;
+    #endif
+
+    #if USE_PIXEL_ALIGNMENT
+      pos = cc_matView * pos;
+      pos.xyz = floor(pos.xyz);
+      pos = cc_matProj * pos;
+    #else
+      pos = cc_matViewProj * pos;
+    #endif
+
+    uv0 = a_texCoord;
+    #if SAMPLE_FROM_RT
+      CC_HANDLE_RT_SAMPLE_FLIP(uv0);
+    #endif
+    color = a_color;
+
+    return pos;
+  }
+}%
+
+CCProgram sprite-fs %{
+  precision highp float;
+  #include <builtin/internal/embedded-alpha>
+
+  in vec4 color;
+  in vec2 uv0;
+
+  uniform OutlineUniforms {
+    vec4 outlineColor;
+    float outlineAlphaThreshold;
+    float outlineThickness;
+  };
+
+  #pragma builtin(local)
+  layout(set = 2, binding = 11) uniform sampler2D cc_spriteTexture;
+
+  vec4 frag () {
+    vec4 spriteColor = CCSampleWithAlphaSeparated(cc_spriteTexture, uv0);
+
+    // แสดงรูปปกติถ้ามี alpha มากกว่า threshold
+    if (spriteColor.a > outlineAlphaThreshold) {
+      return spriteColor * color;
+    }
+
+    // ถ้าพิกเซลปัจจุบันโปร่งใส ให้ตรวจสอบรอบๆ เพื่อสร้าง outline
+    float step = outlineThickness * 0.001;
+
+    // ตรวจสอบ 8 ทิศทางรอบๆ
+    for (float x = -1.0; x <= 1.0; x += 1.0) {
+      for (float y = -1.0; y <= 1.0; y += 1.0) {
+        if (x == 0.0 && y == 0.0) continue;
+        
+        vec2 offset = vec2(x, y) * step;
+        vec4 neighborColor = CCSampleWithAlphaSeparated(cc_spriteTexture, uv0 + offset);
+        
+        // ถ้าเจอพิกเซลข้างเคียงที่มีสี ให้แสดง outline
+        if (neighborColor.a > outlineAlphaThreshold) {
+          return outlineColor;
+        }
+      }
+    }
+
+    // ถ้าไม่เจออะไรเลย ให้โปร่งใส
+    discard;
+    return vec4(0.0);
+  }
+}%

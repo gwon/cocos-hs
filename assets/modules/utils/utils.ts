@@ -28,3 +28,28 @@ export function getRandomFromArray(array: any[]) {
 export function randomMinMax(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+export function formatMoney(
+    amount: number,
+    decimals: number = 2,
+    decimalSeparator: string = ".",
+    thousandsSeparator: string = ","
+): string {
+    if (isNaN(amount) || !isFinite(amount)) {
+        return amount.toString(); // Handle non-numeric values
+    }
+
+    const fixedAmount = Math.abs(amount).toFixed(decimals);
+    const parts = fixedAmount.split(".");
+    const integerPart = parts[0];
+    const decimalPart = parts.length > 1 ? decimalSeparator + parts[1] : "";
+
+    const formattedIntegerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSeparator);
+
+    return (amount < 0 ? "-" : "") + formattedIntegerPart + decimalPart;
+}
+
+export function strLike(name0: string, name1: string) {
+    const index = name0.toLowerCase().indexOf(name1.toLowerCase());
+    return index >= 0;
+}

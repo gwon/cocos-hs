@@ -83,7 +83,6 @@ export class ReelController extends Component {
 
         this.sortingSpinSlots();
         this.addTopAndBottomItems();
-        console.log("this.symbols", this.symbols);
     }
 
     private stopTime() {
@@ -98,6 +97,12 @@ export class ReelController extends Component {
     }
 
     private fillItems() {
+        if (this.symbolManager == null) {
+            console.warn(
+                `ReelController.symbolManager at ${this.node.name} is null please call setup first`
+            );
+            return;
+        }
         const { displayItem, extendedItems } = this.getSymbols();
         for (const item of displayItem) {
             const symbolData = this.symbolManager.getRandomSymbol();

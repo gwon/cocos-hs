@@ -7,7 +7,7 @@ export class API {
     private token: string = "";
     private gamecode: string = "";
 
-    API(url: string, token: string, gamecode: string) {
+    constructor(url: string, token: string, gamecode: string) {
         this.url = url;
         this.token = token;
         this.gamecode = gamecode;

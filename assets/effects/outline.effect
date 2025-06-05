@@ -1,0 +1,86 @@
+# Outline Effect File
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: outline-vs:main
+      frag: outline-fs:main
+      properties:
+        outlineColor: { value: [1, 1, 1, 1] }
+        outlineWidth: { value: 2.0 }
+        outlineStrength: { value: 1.0 }
+        u_texSize: { value: [512, 512, 0.00195, 0.00195] }
+%}
+
+CCProgram outline-vs %{
+  precision highp float;
+  #include <builtin/uniforms/cc-global>
+  
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec2 v_texCoord;
+  out vec4 v_color;
+
+  void main () {
+    gl_Position = cc_matViewProj * vec4(a_position, 1);
+    v_texCoord = a_texCoord;
+    v_color = a_color;
+  }
+}%
+
+CCProgram outline-fs %{
+  precision highp float;
+  
+  in vec2 v_texCoord;
+  in vec4 v_color;
+
+  uniform sampler2D u_texture;
+  uniform OutlineUniforms {
+    vec4 outlineColor;
+    vec4 u_texSize;
+    float outlineWidth;
+    float outlineStrength; 
+  };
+
+  void main () {
+    vec4 color = texture(u_texture, v_texCoord);
+    
+    // ถ้าพิกเซลมีสีอยู่แล้ว ให้แสดงสีปกติ
+    if (color.a > 0.01) {
+      gl_FragColor = color * v_color;
+      return;
+    }
+    
+    // ตรวจสอบพิกเซลรอบๆ เพื่อสร้าง outline
+    float alpha = 0.0;
+    vec2 texelSize = u_texSize.zw;
+    
+    // ใช้ค่าคงที่แทน outlineWidth ใน loop
+    const float MAX_RADIUS = 5.0;
+    
+    for (float x = -MAX_RADIUS; x <= MAX_RADIUS; x += 1.0) {
+      for (float y = -MAX_RADIUS; y <= MAX_RADIUS; y += 1.0) {
+        if (x == 0.0 && y == 0.0) continue;
+        
+        // ใช้ outlineWidth เป็น multiplier แทน
+        float distance = length(vec2(x, y));
+        if (distance > outlineWidth) continue;
+        
+        vec2 offset = vec2(x, y) * texelSize;
+        alpha += texture(u_texture, v_texCoord + offset).a;
+        
+        // หยุดเมื่อเจอ alpha เพื่อประสิทธิภาพ
+        if (alpha > 0.0) break;
+      }
+      if (alpha > 0.0) break;
+    }
+    
+    if (alpha > 0.0) {
+      gl_FragColor = vec4(outlineColor.rgb, outlineColor.a * outlineStrength);
+    } else {
+      discard;
+    }
+  }
+
+}% 
