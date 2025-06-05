@@ -1,17 +1,11 @@
 import {
     _decorator,
     Component,
-    Node,
-    EventTouch,
     Input,
-    UITransform,
     Vec3,
-    Camera,
-    find,
     SpriteFrame,
     Sprite,
     Color,
-    Enum,
     EventHandler,
     NodeEventType,
     Tween,
@@ -126,19 +120,14 @@ export class ButtonEx extends Component {
 
     private updateInteractable() {
         if (this.interactable) {
-            console.log("on updateInteractable", this.node.name, this.interactable);
             this.node.on(Input.EventType.TOUCH_START, this.onPointerDown, this);
             this.node.on(Input.EventType.TOUCH_END, this.onPointerUp, this);
-            this.node.on(Input.EventType.TOUCH_CANCEL, this.onPointerUp, this);
             this.node.on(NodeEventType.MOUSE_ENTER, this.onPointerEnter, this);
             this.node.on(NodeEventType.MOUSE_LEAVE, this.onPointerLeave, this);
             this.effectNormal();
         } else {
-            console.log("off updateInteractable", this.node.name, this.interactable);
-
             this.node.off(Input.EventType.TOUCH_START, this.onPointerDown, this);
             this.node.off(Input.EventType.TOUCH_END, this.onPointerUp, this);
-            this.node.off(Input.EventType.TOUCH_CANCEL, this.onPointerUp, this);
             this.node.off(NodeEventType.MOUSE_ENTER, this.onPointerEnter, this);
             this.node.off(NodeEventType.MOUSE_LEAVE, this.onPointerLeave, this);
             this.effectDisabled();
@@ -185,7 +174,6 @@ export class ButtonEx extends Component {
         if (!this.interactable) {
             return;
         }
-
         const targetScale = new Vec3(
             this.clickEffect.zoomScale,
             this.clickEffect.zoomScale,
@@ -259,6 +247,7 @@ export class ButtonEx extends Component {
     }
 
     private onPointerDown() {
+        EventHandler.emitEvents(this.clickEvents);
         this.effectPointerDown();
     }
 
@@ -266,16 +255,9 @@ export class ButtonEx extends Component {
         this.scheduleOnce(() => {
             if (this.isHover) {
                 this.effectHover();
-                EventHandler.emitEvents(this.clickEvents);
             } else {
                 this.effectNormal();
             }
         }, this.fPointerDowning);
-    }
-
-    private setCursor(cursorType: string) {
-        if (typeof document !== "undefined" && document.body) {
-            document.body.style.cursor = cursorType;
-        }
     }
 }

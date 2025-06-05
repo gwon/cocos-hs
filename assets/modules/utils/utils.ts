@@ -1,4 +1,5 @@
 import { ApiResponse } from "../rg-api/apidata";
+import { Canvas, Node } from "cc";
 
 export function random(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -52,4 +53,15 @@ export function formatMoney(
 export function strLike(name0: string, name1: string) {
     const index = name0.toLowerCase().indexOf(name1.toLowerCase());
     return index >= 0;
+}
+
+export function findCanvasRoot(node: Node) {
+    while (node.parent) {
+        const canvas = node.parent.getComponent(Canvas);
+        if (canvas) {
+            return canvas;
+        }
+        node = node.parent;
+    }
+    return null;
 }
