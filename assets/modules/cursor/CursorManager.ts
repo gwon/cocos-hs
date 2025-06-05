@@ -28,9 +28,9 @@ export class CursorData {
     cursorType: CursorType = CursorType.DEFAULT;
 }
 
-@ccclass("CursorEx")
-export class CursorEx extends Component {
-    static instance: CursorEx = null;
+@ccclass("CursorManager")
+export class CursorManager extends Component {
+    static instance: CursorManager = null;
 
     @property(Camera)
     targetCamera: Camera = null;
@@ -55,7 +55,7 @@ export class CursorEx extends Component {
         for (const cursorData of this.cursorDatas) {
             this.cursorDataMap.set(cursorData.cursorType, cursorData);
         }
-        CursorEx.instance = this;
+        CursorManager.instance = this;
         this.canvas.node.on(Input.EventType.MOUSE_MOVE, this.onMouseMove, this);
         this.hideCursor();
     }
@@ -107,6 +107,6 @@ export class CursorEx extends Component {
     }
 
     public static setCursor(cursorType: CursorType) {
-        CursorEx.instance.setCursor(cursorType);
+        CursorManager.instance.setCursor(cursorType);
     }
 }

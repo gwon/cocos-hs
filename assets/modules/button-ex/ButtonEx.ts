@@ -112,6 +112,11 @@ export class ButtonEx extends Component {
     public setInteractable(interactable: boolean) {
         this.interactable = interactable;
         this.updateInteractable();
+        if (!this.interactable) {
+            this.effectDisabled();
+        } else {
+            this.effectNormal();
+        }
     }
 
     get Interactable() {
@@ -139,7 +144,18 @@ export class ButtonEx extends Component {
             return;
         }
 
-        this.animateEffect(0, this.targetScale, this.disabledEffect.color);
+        const targetScale = new Vec3(
+            this.disabledEffect.zoomScale,
+            this.disabledEffect.zoomScale,
+            this.disabledEffect.zoomScale
+        );
+
+        const duration = this.disabledEffect.duration;
+        if (duration > 0) {
+            this.animateEffect(duration, targetScale, this.disabledEffect.color);
+        } else {
+            this.node.setScale(targetScale);
+        }
         this.targetSprite.spriteFrame = this.disabledEffect.sprite;
     }
 
