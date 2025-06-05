@@ -2,6 +2,7 @@ import { _decorator, Button, Component, Node } from "cc";
 import { Score } from "./Score";
 import { strLike } from "../../modules/utils/utils";
 import { TotalWin } from "./TotalWin";
+import { ButtonEx } from "../../modules/button-ex/ButtonEx";
 const { ccclass, property } = _decorator;
 
 @ccclass("Ui")
@@ -10,7 +11,7 @@ export class Ui extends Component {
     private scoreBet: Score = null;
     private scoreWin: Score = null;
     private totalWin: TotalWin = null;
-    private spinButton: Button = null;
+    private spinButton: ButtonEx = null;
     private turboButton: Button = null;
     private minusButton: Button = null;
     private plusButton: Button = null;
@@ -23,12 +24,14 @@ export class Ui extends Component {
         this.scoreWin = scores.find((score) => strLike(score.name, "win"));
 
         const buttons: Button[] = this.node.getComponentsInChildren(Button);
-        this.spinButton = buttons.find((button) => strLike(button.name, "spin"));
         this.turboButton = buttons.find((button) => strLike(button.name, "turbo"));
         this.minusButton = buttons.find((button) => strLike(button.name, "minus"));
         this.plusButton = buttons.find((button) => strLike(button.name, "plus"));
         this.autoButton = buttons.find((button) => strLike(button.name, "auto"));
         this.totalWin = this.node.getComponentInChildren(TotalWin);
+
+        const buttonExs: ButtonEx[] = this.node.getComponentsInChildren(ButtonEx);
+        this.spinButton = buttonExs.find((buttonEx) => strLike(buttonEx.name, "spin"));
     }
 
     start() {}
@@ -46,7 +49,7 @@ export class Ui extends Component {
     }
 
     activeSpinButton(isActive: boolean) {
-        this.spinButton.interactable = isActive;
+        this.spinButton.setInteractable(isActive);
     }
 
     setTotalWin(totalWin: number) {
