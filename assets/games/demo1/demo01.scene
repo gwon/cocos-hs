@@ -181,7 +181,7 @@
     "_priority": 0,
     "_fov": 45,
     "_fovAxis": 0,
-    "_orthoHeight": 518.1668625146887,
+    "_orthoHeight": 475.68500539374327,
     "_near": 0,
     "_far": 1000,
     "_color": {
@@ -566,7 +566,7 @@
     "value": {
       "__type__": "cc.Size",
       "width": 4,
-      "height": 54.4
+      "height": 94.39999999999999
     }
   },
   {
@@ -4707,6 +4707,7 @@
         "__id__": 171
       }
     ],
+    "clickEvents": [],
     "_id": "4a3sFC91xKVa7e1/6M3PI/"
   },
   {

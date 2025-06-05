@@ -1,3 +1,4 @@
+import { SlotControllerSettings } from "./SlotController";
 import { _decorator, Component, Node } from "cc";
 import { DIRECTION, STATE, ReelController } from "./ReelController";
 import { WinResultItem, ApiResponse } from "../rg-api/apidata";
@@ -55,6 +56,7 @@ export class SlotController extends Component {
     private reelControllers: ReelController[] = [];
     private sWheels: string[][] = [];
     private winResult: WinResultItem[] = [];
+
     private settings: SlotControllerSettings = {
         symbolManager: null,
         spinTime: SPIN_TIME,

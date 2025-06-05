@@ -12,6 +12,7 @@ import {
     Sprite,
     Color,
     Enum,
+    EventHandler,
 } from "cc";
 
 const { ccclass, property } = _decorator;
@@ -49,12 +50,14 @@ export class ButtonEx extends Component {
     @property({ type: [ClickEffectData], tooltip: "ClickEffect data สำหรับแสดงเอฟเฟกต์เมื่อคลิก" })
     public clickEffects: ClickEffectData[] = [];
 
+    @property([EventHandler])
+    clickEvents: EventHandler[] = [];
+
     private isMouseOver: boolean = false;
     private uiTransform: UITransform = null;
 
     start() {
         this.uiTransform = this.node.getComponent(UITransform);
-
         // เปิดใช้งาน touch events
         this.node.on(Input.EventType.TOUCH_START, this.onTouchStart, this);
         this.node.on(Input.EventType.TOUCH_END, this.onTouchEnd, this);
